@@ -24,10 +24,10 @@ import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.observers.Debug;
 import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.PlexusTestCase;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.DefaultServlet;
-import org.mortbay.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -61,10 +61,11 @@ public class HugeFileDownloadTest
 
         server = new Server( 0 );
 
-        Context root = new Context( server, "/", Context.SESSIONS );
+        ServletContextHandler root = new ServletContextHandler( ServletContextHandler.SESSIONS );
         root.setResourceBase( new File( getBasedir(), "target" ).getAbsolutePath() );
         ServletHolder servletHolder = new ServletHolder( new DefaultServlet() );
         root.addServlet( servletHolder, "/*" );
+        server.setHandler( root );
 
         server.start();
 
@@ -103,7 +104,7 @@ public class HugeFileDownloadTest
 
         server = new Server( 0 );
 
-        Context root = new Context( server, "/", Context.SESSIONS );
+        ServletContextHandler root = new ServletContextHandler( ServletContextHandler.SESSIONS );
         root.setResourceBase( new File( getBasedir(), "target" ).getAbsolutePath() );
         ServletHolder servletHolder = new ServletHolder( new HttpServlet()
         {
@@ -123,6 +124,7 @@ public class HugeFileDownloadTest
             }
         } );
         root.addServlet( servletHolder, "/*" );
+        server.setHandler( root );
 
         server.start();
 
